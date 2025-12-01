@@ -1,0 +1,206 @@
+# 🔢 Modulator — Modular Scientific Calculator (Java + Swing + Plugin Architecture)
+
+Modulator is a **fully extensible, plugin-powered scientific calculator** built in Java.
+External developers can add new scientific functions **without modifying any base code**.
+
+The core calculator supports:
+- Live expression evaluation (Google Calculator style)
+- Parentheses, unary operations, operator precedence
+- Modular scientific functions (sin, cos, log, sqrt…)
+- Auto-generated UI buttons
+- Button paging system (auto-fits new plugins)
+- Auto-discovery of new functions at runtime using classpath scanning
+
+---
+
+## ✨ Features
+
+### ✔ Live Calculation
+Expressions update in real time as the user types:
+
+```
+5 + 3 * 2
+→ Result: 11
+```
+
+### ✔ Plugin Architecture
+Developers can add functions like:
+
+```
+cube(2)
+log(100)
+sin(45)
+```
+
+Simply by adding a class that implements `CalcFunction`.
+
+### ✔ Zero Modification Rule
+**External module developers never touch `LiveCalculator.java`.**  
+Plugins are discovered automatically at startup.
+
+### ✔ UI Auto-Updates
+Every new module automatically creates a new button.  
+Button pages expand dynamically.
+
+---
+
+## 📦 Project Structure
+
+```
+modulator/
+│
+├── pom.xml
+│
+└── src/
+    └── main/
+        └── java/
+            ├── com/
+            │   ├── modulo/
+            │   │   └── Registry/
+            │   │       └── FunctionRegistry.java     (Internal plugin loader)
+            │   ├── modulo/
+            │   │   └── functions/
+            │   │       ├── CalcFunction.java         (Plugin API)
+            │   │       ├── SinFunction.java
+            │   │       ├── CosFunction.java
+            │   │       ├── TanFunction.java
+            │   │       ├── SqrtFunction.java
+            │   │       ├── LogFunction.java
+            │   │       └── (external developers add modules here)
+            │   └── LiveCalculator.java           (Base UI + parser — DO NOT EDIT)
+            └── resources/
+```
+
+---
+
+## 🚀 Running the Calculator
+
+### Build
+```bash
+mvn clean package
+```
+
+### Run (classpath)
+```bash
+java -cp target/classes:<dependencies> modulo.LiveCalculator
+```
+
+### Run (fat JAR)
+```bash
+java -jar target/modulator-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+---
+
+## 🧩 Creating a New Function Module
+
+External developers implement one interface.
+
+### Step 1 — Create a class in `modulo.functions`
+
+```java
+package modulo.functions;
+
+public class CubeFunction implements CalcFunction {
+    public CubeFunction() {}
+
+    @Override public String getName() { return "cube"; }
+    @Override public String getInsertText() { return "cube("; }
+    @Override public double evaluate(double x) { return x * x * x; }
+}
+```
+
+### Step 2 — Build the project  
+### Step 3 — Done. The new function loads automatically:
+
+- A new cube button appears  
+- Typing `cube(3)` evaluates to `27`  
+- Shown in paging system if needed
+
+---
+
+## 🔍 How Automatic Module Loading Works
+
+We use the Reflections library to scan the classpath:
+
+```java
+Reflections reflections = new Reflections("modulo.functions");
+Set<Class<? extends CalcFunction>> functions =
+    reflections.getSubTypesOf(CalcFunction.class);
+```
+
+All classes implementing `CalcFunction` and having a public no-arg constructor are:
+
+✔ Instantiated  
+✔ Added to UI  
+✔ Added to parser  
+✔ Shown automatically  
+
+No edits to base files are ever required.
+
+---
+
+## ⚠ Troubleshooting
+
+### ❗ Modules not loading?
+
+1. Package must be exactly:
+```
+modulo.functions
+```
+
+2. Class must be compiled into:
+```
+target/classes/modulo/functions/
+```
+
+3. Must have a public no-arg constructor:
+```java
+public CubeFunction() {}
+```
+
+4. FunctionRegistry must point to correct package:
+```java
+new Reflections("modulo.functions");
+```
+
+### ❗ SLF4J "NOP" warning  
+Safe to ignore — Reflections works without logging dependency.
+
+---
+
+## 🛠 Built With
+- Java 17+  
+- Swing (UI)  
+- Maven  
+- Reflections  
+- ByteBuddy + Javassist  
+
+---
+
+## 🤝 Contributing
+
+Module developers may:
+- Add new scientific functions  
+- Add symbolic math operations  
+- Extend parser capabilities using plugin models  
+
+Core maintainers may update:
+- LiveCalculator.java  
+- FunctionRegistry.java  
+
+Plugin developers **should not modify base code.**
+
+---
+
+## 📄 License
+This project is free to use, modify, and integrate in commercial or personal projects.
+
+---
+
+## ⭐ Future Enhancements
+- Plugin loading from /plugins/*.jar  
+- Hot-reload (no restart needed)  
+- Module metadata (name, version, author)  
+- Categories (Trig, Logic, Algebra)  
+- Graphing calculator module  
