@@ -34,10 +34,6 @@ sin(45)
 
 Simply by adding a class that implements `CalcFunction`.
 
-### ✔ Zero Modification Rule
-**External module developers never touch `LiveCalculator.java`.**  
-Plugins are discovered automatically at startup.
-
 ### ✔ UI Auto-Updates
 Every new module automatically creates a new button.  
 Button pages expand dynamically.
@@ -67,7 +63,7 @@ modulator/
             │   │       ├── SqrtFunction.java
             │   │       ├── LogFunction.java
             │   │       └── (external developers add modules here)
-            │   └── LiveCalculator.java           (Base UI + parser — DO NOT EDIT)
+            │   └── LiveCalculator.java           (Base UI + parser)
             └── resources/
 ```
 
@@ -94,12 +90,11 @@ java -jar target/modulator-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ## 🧩 Creating a New Function Module
 
-External developers implement one interface.
 
 ### Step 1 — Create a class in `modulo.functions`
 
 ```java
-package modulo.functions;
+package com.modulo.functions;
 
 public class CubeFunction implements CalcFunction {
     public CubeFunction() {}
@@ -146,7 +141,7 @@ No edits to base files are ever required.
 
 1. Package must be exactly:
 ```
-modulo.functions
+com.modulo.functions
 ```
 
 2. Class must be compiled into:
@@ -189,7 +184,6 @@ Core maintainers may update:
 - LiveCalculator.java  
 - FunctionRegistry.java  
 
-Plugin developers **should not modify base code.**
 
 ---
 
@@ -198,8 +192,7 @@ This project is free to use, modify, and integrate in commercial or personal pro
 
 ---
 
-## ⭐ Future Enhancements
-- Plugin loading from /plugins/*.jar  
+## Planned Stuff
 - Hot-reload (no restart needed)  
 - Module metadata (name, version, author)  
 - Categories (Trig, Logic, Algebra)  
