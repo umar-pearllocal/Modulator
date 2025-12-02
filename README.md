@@ -56,19 +56,23 @@ modulator/
     └── main/
         └── java/
             ├── com/
-            │   ├── modulo/
-            │   │   └── Registry/
-            │   │       └── FunctionRegistry.java     (Internal plugin loader)
-            │   ├── modulo/
-            │   │   └── functions/
-            │   │       ├── CalcFunction.java         (Plugin API)
-            │   │       ├── SinFunction.java
-            │   │       ├── CosFunction.java
-            │   │       ├── TanFunction.java
-            │   │       ├── SqrtFunction.java
-            │   │       ├── LogFunction.java
-            │   │       └── (external developers add modules here)
-            │   └── LiveCalculator.java           (Base UI + parser)
+            │   └── modulo/
+            │       ├── Registry/
+            │       │   └── FunctionRegistry.java     (Internal plugin loader)
+            │       │  
+            │       ├── internal 
+            │       │   ├── AnnotatedFunctionAdapter.java
+            │       │   ├── CalcFunction.java
+            │       │   └── Function.java
+            │       │
+            │       ├── functions/
+            │       │   ├── SinFunction.java
+            │       │   ├── CosFunction.java
+            │       │   ├── TanFunction.java
+            │       │   ├── SqrtFunction.java
+            │       │   ├── LogFunction.java
+            │       │   └── (external developers add modules here)
+            │       └── LiveCalculator.java           (Base UI + parser)
             └── resources/
 ```
 
@@ -175,7 +179,7 @@ public CubeFunction() {}
 
 4. FunctionRegistry must point to correct package:
 ```java
-new Reflections("modulo.functions");
+new Reflections("com.modulo.functions");
 ```
 
 ### ❗ SLF4J "NOP" warning  
