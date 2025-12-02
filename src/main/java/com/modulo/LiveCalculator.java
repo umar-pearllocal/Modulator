@@ -59,7 +59,8 @@ public class LiveCalculator extends JFrame {
             "4", "5", "6", "*",
             "1", "2", "3", "-",
             "0", ".", "(", ")",
-            "C", "=", "+");
+            "C", "=", "+"
+    );
 
     private final List<CalcFunction> functions = new ArrayList<>();
 
